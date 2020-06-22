@@ -13,6 +13,8 @@ namespace RestFull_Api.Data
         public RestFull_ApiContext (DbContextOptions<RestFull_ApiContext> options)
             : base(options)
         {
+          
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,7 +23,7 @@ namespace RestFull_Api.Data
                .WithOne(ad => ad.Gender)
                 .HasForeignKey<Student>(ad => ad.Gander_Id);
         }
-        public DbSet<employ> employ { get; set; }
+        public DbSet<Employ> employ { get; set; }
         public DbSet<Student> Student { get; set; }
       
     }

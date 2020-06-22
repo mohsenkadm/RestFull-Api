@@ -7,94 +7,87 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestFull_Api.Data;
 using RestFull_Api.Models;
+using RestFull_Api.Models.IRepository;
 using RestFull_Api.Models.Repository;
 
 namespace RestFull_Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class employsController : ControllerBase
+    public class EmploysController : MasterController
     {
-        private readonly RestFull_ApiContext _context;
-        public employsController(RestFull_ApiContext context)
+
+      
+        public EmploysController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            _context = context;
+           
         }
 
         // GET: api/employs
         [HttpGet]
-        public IEnumerable<employ> Getemploy()
+        public IEnumerable<Employ> GetEmploy()
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                return unitOfWork.Employ.GetAll();
-            }
-            
+            return _unitOfWork._employRepository.GetAll();
+
+
             // return await _context.employ.ToListAsync();
         }
 
         // GET: api/employs/5
         [HttpGet("{id}")]
-        public ActionResult<employ> Getemploy(int id)
+        public ActionResult<Employ> GetEmploy(int id)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
+            var employ = (_unitOfWork._employRepository.Get(id));
+            if (employ == null)
             {
-                var employ=(unitOfWork.Employ.Get(id));
-                if (employ == null)
-                {
-                    return NotFound();
-                }
-
-                return employ;
+                return NotFound();
             }
+
+            return employ;
+
         }
 
         // PUT: api/employs/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public IActionResult Putemploy( employ employ)
+        public IActionResult PutEmploy(Employ employ)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                unitOfWork.Employ.Put(employ);
-                unitOfWork.Complete();
+            _unitOfWork._employRepository.Put(employ);
+            _unitOfWork.Complete();
             return NoContent();
-            }
+
         }
 
         // POST: api/employs
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public ActionResult<employ> Postemploy(employ employ)
+        public ActionResult<Employ> PostEmploy(Employ employ)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                unitOfWork.Employ.Add(employ);
-                unitOfWork.Complete();
-            }
+
+            _unitOfWork._employRepository.Add(employ);
+            _unitOfWork.Complete();
+
             return CreatedAtAction("Getemploy", new { id = employ.Id }, employ);
         }
 
         // DELETE: api/employs/5
         [HttpDelete("{id}")]
-        public ActionResult<employ> Deleteemploy(int id)
+        public ActionResult<Employ> DeleteEmploy(int id)
         {
-           
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                var employ =  unitOfWork.Employ.Get(id);
-                if (employ == null)
-                {
-                    return NotFound();
-                }
-                unitOfWork.Employ.Remove(employ);
-                unitOfWork.Complete(); 
-                return employ;
-            }
 
-          
+            var employ = _unitOfWork._employRepository.Get(id);
+            if (employ == null)
+            {
+                return NotFound();
+            }
+            _unitOfWork._employRepository.Remove(employ);
+            _unitOfWork.Complete();
+            return employ;
+
+
+
         }
 
     }

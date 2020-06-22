@@ -14,7 +14,7 @@ namespace RestFull_Api.Models.Entity
             //student = new HashSet<Student>();
         }
 
-      [Key]
+        [Key]
         public int Gender_Id { get; set; }
         [Required]
         public string Gender_ { get; set; }

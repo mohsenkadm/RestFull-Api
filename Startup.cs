@@ -12,6 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using RestFull_Api.Data;
+using RestFull_Api.Models.Repository;
+using Microsoft.CodeAnalysis.Options;
+using RestFull_Api.Models.IRepository;
 
 namespace RestFull_Api
 {
@@ -33,7 +36,11 @@ namespace RestFull_Api
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
             services.AddDbContext<RestFull_ApiContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("RestFull_ApiContext")));
+                   options.UseSqlServer(Configuration.GetConnectionString("RestFull_ApiContext")));
+            
+            services.AddTransient<IEmployRepository, EmployRepository>();
+            services.AddTransient<IStudentRepository, StudentRepository>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,7 +11,7 @@ namespace RestFull_Api.Models.Repository
 {
     public class StudentRepository : Repository<Student>, IStudentRepository
     {
-        public StudentRepository(DbContext context) : base(context)
+        public StudentRepository(RestFull_ApiContext context) : base(context)
         {
 
         }

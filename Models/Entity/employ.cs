@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RestFull_Api.Models
 {
-    public class employ
+    public class Employ
     {
         public int Id { get; set; }
 

@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace RestFull_Api.Models.IRepository
 {
-    public interface IEmployRepository : IRepository<employ>
+    public interface IEmployRepository : IRepository<Employ>
     {
-        IEnumerable<employ> GetEmploy(int id);
+        IEnumerable<Employ> GetEmploy(int id);
     }
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace RestFull_Api.Models.Repository
 {
-    public class EmployRepository : Repository<employ>, IEmployRepository
+    public class EmployRepository : Repository<Employ>, IEmployRepository
     {
-        public EmployRepository(DbContext context) : base(context)
+        public EmployRepository(RestFull_ApiContext context) : base(context)
         {
 
         }
@@ -20,7 +20,7 @@ namespace RestFull_Api.Models.Repository
             get { return Context as RestFull_ApiContext; }
         }
 
-        public IEnumerable<employ> GetEmploy(int id)
+        public IEnumerable<Employ> GetEmploy(int id)
         {
             
                 return PlutoContext.employ.ToList();

@@ -7,19 +7,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestFull_Api.Data;
 using RestFull_Api.Models.Entity;
+using RestFull_Api.Models.IRepository;
 using RestFull_Api.Models.Repository;
 
 namespace RestFull_Api.Controllers
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class StudentsController : ControllerBase
+    public class StudentsController : MasterController
     {
-        private readonly RestFull_ApiContext _context;
-
-        public StudentsController(RestFull_ApiContext context)
+        
+        public StudentsController(IUnitOfWork unitOfWork) :base(unitOfWork)
         {
-            _context = context;
+           
         }
 
         // GET: api/Students
@@ -27,36 +27,33 @@ namespace RestFull_Api.Controllers
         [HttpGet]
         public IEnumerable<Student> GetStudent()
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                return unitOfWork.student.GetAll();
-            }
+
+            return _unitOfWork._studentRepository.GetAll();
+
         }
         // GET: api/StudentsWithGender
         [HttpGet]
-      //  [HttpGet("{RecordName}", Name = "GetStudentWithGender")]
+        //  [HttpGet("{RecordName}", Name = "GetStudentWithGender")]
         public IEnumerable<Student> GetStudentWithGender()
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                return unitOfWork.student.GetStudentWithGender();
-            }
+
+            return _unitOfWork._studentRepository.GetStudentWithGender();
+
         }
 
         // GET: api/Students/5
         [HttpGet("{id}")]
         public ActionResult<Student> GetStudent(int id)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                var student = (unitOfWork.student.Get(id));
-                if (student == null)
-                {
-                    return NotFound();
-                }
 
-                return student;
+            var student = (_unitOfWork._studentRepository.Get(id));
+            if (student == null)
+            {
+                return NotFound();
             }
+
+            return student;
+
         }
 
         // PUT: api/Students/5
@@ -65,12 +62,11 @@ namespace RestFull_Api.Controllers
         [HttpPut("{id}")]
         public IActionResult PutStudent(int id, Student student)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                unitOfWork.student.Put(student);
-                unitOfWork.Complete();
-                return NoContent();
-            }
+
+            _unitOfWork._studentRepository.Put(student);
+            _unitOfWork.Complete();
+            return NoContent();
+
         }
 
         // POST: api/Students
@@ -79,12 +75,11 @@ namespace RestFull_Api.Controllers
         [HttpPost]
         public ActionResult<Student> PostStudent(Student student)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
-            {
-                unitOfWork.student.Add(student);
-                unitOfWork.Complete();
-            }
-          
+
+            _unitOfWork._studentRepository.Add(student);
+            _unitOfWork.Complete();
+
+
             return CreatedAtAction("GetStudent", new { id = student.Id }, student);
         }
 
@@ -92,19 +87,18 @@ namespace RestFull_Api.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Student> DeleteStudent(int id)
         {
-            using (var unitOfWork = new UnitOfWork(_context))
+
+            var Student = _unitOfWork._studentRepository.Get(id);
+            if (Student == null)
             {
-                var Student = unitOfWork.student.Get(id);
-                if (Student == null)
-                {
-                    return NotFound();
-                }
-                unitOfWork.student.Remove(Student);
-                unitOfWork.Complete();
-                return Student;
+                return NotFound();
             }
+            _unitOfWork._studentRepository.Remove(Student);
+            _unitOfWork.Complete();
+            return Student;
+
         }
 
-       
+
     }
 }
